@@ -119,6 +119,30 @@ func TestEqBytesToSql(t *testing.T) {
 	assert.Equal(t, expectedArgs, args)
 }
 
+func TestEqAnyToSql(t *testing.T) {
+	b := Any{"id": []int{1, 2, 3}}
+	sql, args, err := b.ToSql()
+	assert.NoError(t, err)
+
+	expectedSql := "id ANY (?,?,?)"
+	assert.Equal(t, expectedSql, sql)
+
+	expectedArgs := []interface{}{1, 2, 3}
+	assert.Equal(t, expectedArgs, args)
+}
+
+func TestAnyNotInToSql(t *testing.T) {
+	b := NotAny{"id": []int{1, 2, 3}}
+	sql, args, err := b.ToSql()
+	assert.NoError(t, err)
+
+	expectedSql := "id NOT ANY (?,?,?)"
+	assert.Equal(t, expectedSql, sql)
+
+	expectedArgs := []interface{}{1, 2, 3}
+	assert.Equal(t, expectedArgs, args)
+}
+
 func TestLtToSql(t *testing.T) {
 	b := Lt{"id": 1}
 	sql, args, err := b.ToSql()
